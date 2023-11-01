@@ -5,21 +5,23 @@ import { AiFillEyeInvisible } from "react-icons/ai";
 import ResetPassword from "./ResetPassword";
 
 const Login = () => {
+  const [isReset, setIsReset] = useState(false);
+
   return (
     <div className="max-w-screen-xl flex justify-center mx-auto items-center min-h-screen relative">
       <div className="flex items-center w-full justify-between">
         <SvgImg />
-        <LoginForm />
+        <LoginForm setIsReset={setIsReset} />
       </div>
 
-      <ResetPassword />
+      {isReset && <ResetPassword setIsReset={setIsReset} />}
     </div>
   );
 };
 
 export default Login;
 
-const LoginForm = () => {
+const LoginForm = ({ setIsReset }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setvalid] = useState(true);
@@ -70,7 +72,12 @@ const LoginForm = () => {
               <br />
             </div>
             <div>
-              <p className="text-[#38AEE6]">Forgot Password?</p>
+              <p
+                className="text-[#38AEE6] cursor-pointer"
+                onClick={() => setIsReset(true)}
+              >
+                Forgot Password?
+              </p>
             </div>
           </div>
         </form>
