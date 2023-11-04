@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MdEmail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import InputForm from "../components/InputForm";
 
 const ResetPassword = ({ setIsReset }) => {
   const [next, setNext] = useState(0);
@@ -20,9 +21,12 @@ const ResetPassword = ({ setIsReset }) => {
   };
 
   return (
-    <div className="reset_password bg-white w-[500px] px-4 py-4 h-[300px] rounded-lg">
-      {HandleCard(next)}
-    </div>
+    <>
+      <div className="overflow"></div>
+      <div className="reset_password  w-[711px]  h-[532px] ">
+        {HandleCard(next)}
+      </div>
+    </>
   );
 };
 
@@ -31,14 +35,14 @@ export default ResetPassword;
 const Input = ({ icon, lastIcon, onChange, value, type, valid }) => {
   return (
     <div
-      className={`flex items-center border ${
+      className={`flex items-center border border-[#0D425B] h-[67px] ${
         !valid && "border-red-500 "
-      } py-3 px-2 rounded-lg gap-2`}
+      } px-3 py-1 rounded-lg gap-4 bg-[#ECECEC]`}
     >
       {icon}
       <input
         type={type}
-        className="w-full h-full border-none outline-none"
+        className="border-none outline-none bg-[#ECECEC] text-[#0D425B] font-bold placeholder:font-normal placeholder:text-sm placeholder:text-[#0d425bc7]"
         onChange={(e) => onChange(e.target.value)}
         value={value}
         required
@@ -57,25 +61,28 @@ const Container = ({
   isValid,
   type,
   icon,
+  placeholder,
+  name,
 }) => {
   return (
     <>
-      <div>
-        <h2 className="text-2xl font-bold text-center text-[#0D425B]">
+      <div className="mb-10">
+        <h2 className="text-3xl mb-5 font-bold text-center text-[#0D425B]">
           {Header}
         </h2>
         <div className=" flex items-center justify-center pt-4">
-          <p className="text-[#666666] w-[70%] text-lg text-center">
-            {Detials}
-          </p>
+          <p className="text-[#666666] w-[60%] text-center">{Detials}</p>
         </div>
       </div>
-      <Input
+
+      <InputForm
         onChange={onChange}
         value={value}
         type={type}
         valid={isValid}
         icon={icon}
+        placeholder={placeholder}
+        name={name}
       />
     </>
   );
@@ -86,29 +93,37 @@ const Email = ({ onChange, setIsReset }) => {
   const [valid, setvalid] = useState(true);
 
   return (
-    <div className="h-full flex flex-col justify-between">
-      <Container
-        Header={"Reset Password"}
-        Detials={"Please enter your email address to search for your Account"}
-        onChange={setEmail}
-        value={email}
-        isValid={valid}
-        type={"email"}
-        icon={<MdEmail className={`w-5 h-5 ${!valid && "text-red-500"}`} />}
-      />
-      <div className="flex items-center justify-between gap-5">
-        <button
-          className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-lg"
-          onClick={() => onChange(1)}
-        >
-          Next
-        </button>
-        <button
-          className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-lg"
-          onClick={() => setIsReset(false)}
-        >
-          Back
-        </button>
+    <div className=" bg-white px-12 py-20 rounded-lg">
+      <div className="h-full flex flex-col gap-3 justify-btween relative">
+        <Container
+          Header={"Reset Password"}
+          Detials={"Please enter your email address to search for your Account"}
+          onChange={setEmail}
+          value={email}
+          isValid={valid}
+          type={"email"}
+          placeholder={"Enter your email address"}
+          name={"Email"}
+          icon={
+            <MdEmail
+              className={`w-[27.05px] h-[21.96px] ${!valid && "text-red-500"}`}
+            />
+          }
+        />
+        <div className="flex items-center justify-between gap-5 mt-6">
+          <button
+            className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-[20px] font-semibold h-[67px]"
+            onClick={() => onChange(1)}
+          >
+            Next
+          </button>
+          <button
+            className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-[20px] font-semibold h-[67px]"
+            onClick={() => setIsReset(false)}
+          >
+            Back
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -118,31 +133,34 @@ const OTP = ({ onChange }) => {
   const [valid, setvalid] = useState(true);
 
   return (
-    <div className="h-full flex flex-col justify-between">
-      <Container
-        Header={"OTP Verification"}
-        Detials={"We've sent a verificaton code to your email"}
-        onChange={setOpt}
-        value={opt}
-        isValid={valid}
-        type={"text"}
-      />
-      <Button onNext={() => onChange(2)} onPrev={() => onChange(0)} />
+    <div className=" bg-white px-12 py-20 rounded-lg">
+      <div className="h-full flex flex-col justify-between gap-3">
+        <Container
+          Header={"OTP Verification"}
+          Detials={"We've sent a verificaton code to your email"}
+          onChange={setOpt}
+          value={opt}
+          isValid={valid}
+          type={"text"}
+          placeholder={"Enter verification code"}
+        />
+        <Button onNext={() => onChange(2)} onPrev={() => onChange(0)} />
+      </div>
     </div>
   );
 };
 
 const Button = ({ onNext, onPrev }) => {
   return (
-    <div className="flex items-center justify-between gap-5">
+    <div className="flex items-center justify-between gap-5 mt-5">
       <button
-        className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-lg"
+        className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-[20px] font-semibold h-[67px]"
         onClick={onNext}
       >
         Next
       </button>
       <button
-        className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-lg"
+        className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-[20px] font-semibold h-[67px]"
         onClick={onPrev}
       >
         Back
@@ -176,60 +194,83 @@ const ChangePassword = ({ onChange }) => {
   const [valid, setvalid] = useState(true);
   const [password, setPassword] = useState("");
   return (
-    <div className="relative h-full">
-      <div className="h-full">
-        <div>
-          <div className="img_reset flex items-center justify-center">
-            <svg
-              className="w-[100px]"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
+    <div className=" bg-white px-12 py-20 rounded-lg">
+      <div className="relative h-full">
+        <div className="h-full">
+          <div>
+            <div className="img_reset flex items-center justify-center">
+              <svg
+                className="w-[100px]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <div className="text-center text-rest">
+              <p className="text-[20px] text-[#0D425B] font-semibold">
+                Mahmoud Sheta
+              </p>
+            </div>
           </div>
-          <div className="text-center text-rest">
-            {" "}
-            <p className="text-[20px] text-[#0D425B] font-bold">
-              Mahmoud Sheta
-            </p>
-          </div>
-        </div>
 
-        <div className="flex flex-col gap-4 h-full justify-center pt-20">
-          <Input
-            onChange={setPassword}
-            value={password}
-            type={"password"}
-            valid={valid}
-            icon={<FaKey className={`w-5 h-4 ${!valid && "text-red-500"}`} />}
-          />
-          <Input
-            onChange={setPassword}
-            value={password}
-            type={"password"}
-            valid={valid}
-            icon={<FaKey className={`w-5 h-4 ${!valid && "text-red-500"}`} />}
-          />
+          <div className="flex flex-col gap-4 h-full justify-center pt-20">
+            <InputForm
+              onChange={setPassword}
+              value={password}
+              type={"password"}
+              valid={valid}
+              icon={
+                <FaKey
+                  className={`w-[24.34px] h-[24.7px] ${
+                    !valid && "text-red-500"
+                  }`}
+                />
+              }
+              placeholder={"Enter your new password"}
+              name={"New Password"}
+              lastIcon={
+                <AiFillEyeInvisible className={`w-[27.05px] h-[21.96px]`} />
+              }
+            />
+            <InputForm
+              onChange={setPassword}
+              value={password}
+              type={"password"}
+              valid={valid}
+              icon={
+                <FaKey
+                  className={`w-[24.34px] h-[24.7px] ${
+                    !valid && "text-red-500"
+                  }`}
+                />
+              }
+              placeholder={"Enter your new password"}
+              name={"Confirm Password"}
+              lastIcon={
+                <AiFillEyeInvisible className={`w-[27.05px] h-[21.96px]`} />
+              }
+            />
 
-          <div className="flex items-center justify-between gap-5">
-            <button
-              className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-lg"
-              onClick={() => onChange(3)}
-            >
-              save
-            </button>
-            <button
-              className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-lg"
-              onClick={() => onChange(1)}
-            >
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-5 mt-5">
+              <button
+                className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-[20px] font-semibold h-[67px]"
+                onClick={() => onChange(3)}
+              >
+                save
+              </button>
+              <button
+                className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-[20px] font-semibold h-[67px]"
+                onClick={() => onChange(1)}
+              >
+                Back
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -239,29 +280,32 @@ const ChangePassword = ({ onChange }) => {
 
 const Done = ({ setIsReset }) => {
   return (
-    <div className="flex items-center justify-between w-full flex-col h-full py-5">
-      <svg
-        width="119"
-        height="119"
-        viewBox="0 0 119 119"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="59.5" cy="59.5" r="59.5" fill="#4CAF50" />
-        <path
-          d="M25 56L50.5 81.5L95 37"
-          stroke="white"
-          stroke-width="15"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+    <div className="flex items-center justify-between w-full flex-col h-[346px] bg-white py-10 rounded-lg">
+      <div className="flex flex-col items-center gap-8">
+        <svg
+          width="119"
+          height="119"
+          viewBox="0 0 119 119"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="59.5" cy="59.5" r="59.5" fill="#4CAF50" />
+          <path
+            d="M25 56L50.5 81.5L95 37"
+            stroke="white"
+            stroke-width="15"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <p className="text-[#4CAF50] text-[20px] font-semibold">
+          Your New Password is saved!
+        </p>
+      </div>
 
       <div className="flex flex-col gap-4 items-center">
-        <p>Your New Password is saved!</p>
-
         <button
-          className=" bg-[#38AEE6] w-fit px-5 text-white rounded-lg py-1 text-lg"
+          className=" bg-[#38AEE6] px-5 h-[51px] w-[213px] text-white rounded-lg py-1 text-lg"
           onClick={() => setIsReset(false)}
         >
           Done

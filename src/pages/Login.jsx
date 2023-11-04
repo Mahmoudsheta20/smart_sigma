@@ -25,11 +25,12 @@ const LoginForm = ({ setIsReset }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setvalid] = useState(true);
+
   console.log(email);
   console.log(password);
 
   const HandleLogin = () => {
-    if (email.length > 0 && password.length > 0) {
+    if (email && password) {
       setvalid(true);
     } else {
       setvalid(false);
@@ -37,8 +38,8 @@ const LoginForm = ({ setIsReset }) => {
   };
   console.log(valid);
   return (
-    <div className="flex flex-col gap-10 justify-between  h-[500px] py-20 px-6 bg-white rounded-lg w-[45%]">
-      <div>
+    <div className="flex flex-col gap-10 h-[750px] justify-center py-20 px-10 bg-white rounded-lg w-[50%] relative">
+      <div className="text__absulte">
         <h3 className="text-2xl ">Welcom To</h3>
         <h4 className="text-4xl font-bold text-[#0D425B]">
           <span className="text-[#38AEE6]">Smart</span> Sigma
@@ -46,31 +47,48 @@ const LoginForm = ({ setIsReset }) => {
       </div>
 
       <div>
-        <form action="" className="flex flex-col gap-5">
+        <form action="" className="flex flex-col gap-8 mt-20">
           <Input
-            icon={<MdEmail className={`w-5 h-5 ${!valid && "text-red-500"}`} />}
+            icon={
+              <MdEmail
+                className={`w-[27.05px] h-[21.96px] ${
+                  !valid && "text-red-500"
+                }`}
+              />
+            }
             onChange={setEmail}
             value={email}
             type={"email"}
             valid={valid}
+            placeholder={"Enter your email "}
+            name={"Email"}
           />
           <Input
-            icon={<FaKey className={`w-5 h-4 ${!valid && "text-red-500"}`} />}
-            lastIcon={<AiFillEyeInvisible className={`w-6 h-5`} />}
+            icon={
+              <FaKey
+                className={`w-[27.05px] h-[21.96px] ${
+                  !valid && "text-red-500"
+                }`}
+              />
+            }
+            lastIcon={
+              <AiFillEyeInvisible className={`w-[27.05px] h-[21.96px]`} />
+            }
             onChange={setPassword}
             value={password}
             type={"password"}
             valid={valid}
+            placeholder={"Enter your Password"}
+            name={"Password"}
           />
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center  gap-1">
-              <input type="checkbox" name="Remember" value="Remember" />
-              <label htmlFor="Remember" className="text-sm font-semibold">
-                Remember me
-              </label>
-              <br />
-            </div>
+            <label class="custom-checkbox flex items-center gap-3 text-[#2F2F2F]">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Remember me
+            </label>
+
             <div>
               <p
                 className="text-[#38AEE6] cursor-pointer"
@@ -82,37 +100,54 @@ const LoginForm = ({ setIsReset }) => {
           </div>
         </form>
         {!valid && (
-          <p className="text-red-500">
+          <p className="text-[#F44336] mt-2">
             Incorrect password or email ,please try again...
           </p>
         )}
+        <div className="mt-4">
+          <button
+            className="w-full bg-[#38AEE6] h-[67px] text-[20px] font-semibold text-white py-3 rounded-lg mt-10 bottom__absulte"
+            onClick={HandleLogin}
+            type="submit"
+          >
+            Login
+          </button>
+        </div>
       </div>
-      <button
-        className="w-full bg-[#38AEE6] text-white py-2 rounded-lg"
-        onClick={HandleLogin}
-        type="submit"
-      >
-        Login
-      </button>
     </div>
   );
 };
 
-const Input = ({ icon, lastIcon, onChange, value, type, valid }) => {
+const Input = ({
+  icon,
+  lastIcon,
+  onChange,
+  value,
+  type,
+  valid,
+  placeholder,
+  name,
+}) => {
   return (
     <div
-      className={`flex items-center border ${
+      className={`flex items-center border border-[#0D425B] h-[67px] ${
         !valid && "border-red-500 "
-      } py-3 px-2 rounded-lg gap-2`}
+      } px-3 py-1 rounded-lg gap-4 bg-[#ECECEC]`}
     >
       {icon}
-      <input
-        type={type}
-        className="w-full h-full border-none outline-none"
-        onChange={(e) => onChange(e.target.value)}
-        value={value}
-        required
-      />
+
+      <div className="w-full h-full flex flex-col justify-center">
+        {value && <p className="text-[12px] text-[#0D425B]">{name}</p>}
+        <input
+          type={type}
+          className="border-none outline-none bg-[#ECECEC] text-[#0D425B] font-bold placeholder:font-normal placeholder:text-sm placeholder:text-[#0d425bc7]"
+          onChange={(e) => onChange(e.target.value)}
+          value={value}
+          required
+          placeholder={placeholder}
+        />
+      </div>
+
       {lastIcon}
       {!valid && <IconWrong />}
     </div>
@@ -123,8 +158,8 @@ const SvgImg = () => {
   return (
     <div>
       <svg
-        width="450"
-        height="450"
+        width="590"
+        height="590"
         viewBox="0 0 591 590"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

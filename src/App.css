@@ -4,17 +4,180 @@
 
 .img_reset {
   position: absolute;
-  width: 130px;
-  height: 130px;
+  width: 220px;
+  height: 220px;
   background-color: #136f9a;
-  top: -30px;
+  top: -90px;
   left: 50%;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
 .text-rest {
-  position: absolute;
   top: 50px;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  position: absolute;
+}
+.text__absulte {
+  position: absolute;
+  top: 80px;
+}
+
+/* input[type="checkbox"] {
+  appearance: none;
+  background-color: #ececec;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 22.57px;
+  height: 19px;
+  border: 1 solid #d9d9d9;
+  border-radius: 4px;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center
+}
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+} */
+/* Hide the default checkbox */
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Style the custom checkbox */
+.custom-checkbox .checkmark {
+  position: relative;
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  background-color: #ececec;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+}
+
+/* Style the custom checkbox when it's checked */
+.custom-checkbox input:checked + .checkmark {
+  background-color: #ececec;
+  border: 1px solid #d9d9d9;
+}
+
+/* Create a checkmark symbol using pseudo-elements */
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #38aee6;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Show the checkmark when the checkbox is checked */
+.custom-checkbox input:checked + .checkmark:after {
+  display: block;
+}
+
+/* Style the label text */
+.custom-checkbox label {
+  display: inline-block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* When the checkbox is checked, change the text color */
+.custom-checkbox input:checked + .checkmark + label {
+  color: #2196f3;
+}
+
+.overflow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #dcdcdc56;
+  left: 0;
+  z-index: 1;
+}
+.add__project {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 5;
+}
+.project__card {
+  position: absolute;
+  width: 43.15px;
+  height: 48.24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  top: -20px;
+}
+
+table {
+  width: 100%;
+}
+
+table td {
+}
+
+thead {
+}
+tbody:before {
+  content: "-";
+  display: block;
+  line-height: 1em;
+  color: transparent;
+}
+
+.navbar {
+  align-items: flex-end;
+  display: inline-flex;
+  gap: 70px;
+  left: 7px;
+  position: relative;
+  top: 4px;
+}
+.card__person {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 40px;
+}
+
+.img__person {
+  position: absolute;
+  top: 23%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.txt__person {
+  position: absolute;
+  top: 60%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.button__person {
+  position: absolute;
+  top: 90%;
   transform: translate(-50%, -50%);
   left: 50%;
 }
