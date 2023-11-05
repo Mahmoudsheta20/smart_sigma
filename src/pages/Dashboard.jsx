@@ -1,8 +1,14 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { listManage } from "../utils/main";
 import { Link } from "react-router-dom";
+import { useStateContext } from "../context/CreateContext";
 const Dashboard = () => {
+  const { token } = useStateContext();
+  if (!token) {
+    // If not authenticated, redirect to the login page
+    return <Navigate to="/" />;
+  }
   return (
     <div className="App bg-[#DCDCDC] min-h-screen w-[100%] ">
       <div className=" min mx-auto flex gap-5 px-10">

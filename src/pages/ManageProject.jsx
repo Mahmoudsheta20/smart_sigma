@@ -9,30 +9,39 @@ import { LiaCalendarTimesSolid } from "react-icons/lia";
 const Home = () => {
   const [addProject, setaddProject] = useState(false);
   return (
-    <div className="w-full relative">
-      <div className="py-10 flex  justify-between w-full gap-5">
-        {listProjectCard.map((project) => (
-          <ProjectCard
-            icon={project.icon}
-            bgColor={project.bgColor}
-            title_first={project.title_first}
-            title_secend={project.title_second}
-            number={project.number}
-            textColor={project.textColor}
-            bgIcon={project.bgIcon}
-          />
-        ))}
-      </div>
-      <SearchBar setaddProject={setaddProject} />
-      <div className="mt-6">
-        <h2 className="text-[20px] font-bold text-[#0D425B] mb-5">
-          Projects Info
-        </h2>
-        <ProjectTable />
-      </div>
+    <>
+      {addProject && (
+        <>
+          <div className="overflow"></div>
+          <AddProject onChange={setaddProject} />
+        </>
+      )}
 
-      <Pagnation />
-    </div>
+      <div className="w-full relative">
+        <div className="py-10 flex  justify-between w-full gap-5">
+          {listProjectCard.map((project) => (
+            <ProjectCard
+              icon={project.icon}
+              bgColor={project.bgColor}
+              title_first={project.title_first}
+              title_secend={project.title_second}
+              number={project.number}
+              textColor={project.textColor}
+              bgIcon={project.bgIcon}
+            />
+          ))}
+        </div>
+        <SearchBar setaddProject={setaddProject} />
+        <div className="mt-6">
+          <h2 className="text-[20px] font-bold text-[#0D425B] mb-5">
+            Projects Info
+          </h2>
+          <ProjectTable />
+        </div>
+
+        <Pagnation />
+      </div>
+    </>
   );
 };
 

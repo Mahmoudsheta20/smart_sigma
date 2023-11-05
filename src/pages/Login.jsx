@@ -3,10 +3,14 @@ import { MdEmail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import ResetPassword from "./ResetPassword";
-
+import { useStateContext } from "../context/CreateContext";
+import axios from "../axios";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "universal-cookie";
 const Login = () => {
   const [isReset, setIsReset] = useState(false);
-
+  const { user, setToken } = useStateContext();
+  console.log(user);
   return (
     <div className="max-w-screen-xl flex justify-center mx-auto items-center min-h-screen relative">
       <div className="flex items-center w-full justify-between">
@@ -25,16 +29,30 @@ const LoginForm = ({ setIsReset }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setvalid] = useState(true);
-
-  console.log(email);
+  const { user, contextValue } = useStateContext();
+  const { setToken, token } = contextValue;
   console.log(password);
-
-  const HandleLogin = () => {
-    if (email && password) {
-      setvalid(true);
-    } else {
-      setvalid(false);
+  console.log(contextValue);
+  const HandleLogin = async () => {
+    try {
+      const req = await axios.post("auth/login", {
+        email,
+        password,
+      });
+      console.log(req.data);
+      const { token } = req.data;
+      const decode = jwtDecode(token);
+      console.log("decode", decode);
+      setToken(token);
+    } catch (err) {
+      console.log(err);
     }
+
+    // if (email && password) {
+    //   setvalid(true);
+    // } else {
+    //   setvalid(false);
+    // }
   };
   console.log(valid);
   return (
@@ -801,35 +819,3 @@ const IconWrong = () => {
 //     </div>
 //   );
 // };
-
-const Otp = ({ prev }) => {
-  const [email, setEmail] = useState("");
-  const [valid, setvalid] = useState(true);
-  return (
-    <div className="h-full flex flex-col justify-between ">
-      <div>
-        <h2 className="text-2xl font-bold text-center text-[#0D425B]">
-          OTP Verification
-        </h2>
-        <div className=" flex items-center justify-center pt-4">
-          <p className="text-[#666666] w-[70%] text-lg text-center">
-            We've sent a verificaton code to your email
-          </p>
-        </div>
-      </div>
-      <Input onChange={setEmail} value={email} type={"text"} valid={valid} />
-
-      <div className="flex items-center justify-between gap-5">
-        <button className="w-[50%] bg-[#38AEE6] text-white rounded-lg py-3 text-lg">
-          Next
-        </button>
-        <button
-          className="w-[50%] bg-[#DCDCDC] text-[#666666] rounded-lg py-3 text-lg"
-          onClick={() => prev(0)}
-        >
-          Back
-        </button>
-      </div>
-    </div>
-  );
-};

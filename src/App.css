@@ -112,7 +112,7 @@ input[type="checkbox"]:checked::before {
   height: 100%;
   background-color: #dcdcdc56;
   left: 0;
-  z-index: 1;
+  z-index: 2;
 }
 .add__project {
   position: absolute;
@@ -158,8 +158,8 @@ tbody:before {
 }
 .card__person {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
 }
 
 .img__person {

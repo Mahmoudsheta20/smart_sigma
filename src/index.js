@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Home from "./pages/ManageProject";
 import Dashboard from "./pages/Dashboard";
 import ManageEmployee from "./pages/ManageEmployee";
+import { StoreContext } from "./context/CreateContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -39,7 +40,9 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <StoreContext>
+      <RouterProvider router={router} />
+    </StoreContext>
   </React.StrictMode>
 );
 
