@@ -4,15 +4,18 @@ import { listManage } from "../utils/main";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../context/CreateContext";
 const Dashboard = () => {
-  const { token } = useStateContext();
+  const { token, user, LogOut } = useStateContext();
+  console.log(token);
   if (!token) {
+    console.log(token);
     // If not authenticated, redirect to the login page
     return <Navigate to="/" />;
   }
+  console.log(user);
   return (
     <div className="App bg-[#DCDCDC] min-h-screen w-[100%] ">
       <div className=" min mx-auto flex gap-5 px-10">
-        <NavBar />
+        <NavBar user={user} LogOut={LogOut} />
         <Outlet />
       </div>
     </div>
@@ -21,7 +24,7 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-const NavBar = () => {
+const NavBar = ({ user, LogOut }) => {
   return (
     <div className="w-[20%] h-screen py-5 ">
       <div className="bg-white h-full rounded-lg px-4 flex flex-col justify-between py-10">
@@ -40,7 +43,7 @@ const NavBar = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                 clip-rule="evenodd"
               ></path>
@@ -48,13 +51,14 @@ const NavBar = () => {
           </div>
           <div className="text-center">
             <p className="text-[20px] text-[#0D425B] font-semibold mt-5">
-              Mahmoud Sheta
+              {user}
             </p>
           </div>
         </div>
         <div className="w-full flex flex-col gap-5 justify-center items-center">
-          {listManage.map((manage) => (
+          {listManage.map((manage, i) => (
             <ManageCard
+              key={i}
               icon={manage.icon}
               bgColor={manage.bgColor}
               title={manage.title}
@@ -64,13 +68,24 @@ const NavBar = () => {
             />
           ))}
         </div>
-        <div className="w-full flex flex-col gap-5 justify-center items-center">
-          <ManageCard
-            icon={<IconClose />}
-            bgColor={"bg-[#1A83B5]"}
-            title={"Log Out"}
-            link={"logout"}
-          />
+        <div
+          className="w-full flex flex-col gap-5 justify-center items-center"
+          onClick={LogOut}
+        >
+          <NavLink
+            to={"/"}
+            end
+            className={({ isActive, isPending }) =>
+              isPending
+                ? "pending"
+                : isActive
+                ? `bg-[#1A83B5] flex items-center h-[45px] w-[230px] rounded-lg px-3 gap-3`
+                : `bg-[#1A83B5] flex items-center h-[45px] w-[230px] rounded-lg px-3 gap-3`
+            }
+          >
+            <IconClose />
+            <h3 className="text-[#fff] font-semibold">Log Out</h3>
+          </NavLink>
         </div>
       </div>
     </div>

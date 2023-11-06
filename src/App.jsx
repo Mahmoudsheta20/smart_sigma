@@ -1,21 +1,17 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/ManageProject";
 import Login from "./pages/Login";
 import axios from "./axios";
 import { useEffect } from "react";
+import { useStateContext } from "./context/CreateContext";
 function App() {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("profile");
-        console.log(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  const { token } = useStateContext();
+  if (token) {
+    console.log(token);
+    // If not authenticated, redirect to the login page
+    return <Navigate to="/dashboard" />;
+  }
   return (
     <div className="App bg-[#DCDCDC] min-h-screen w-[100%] ">
       <Outlet />

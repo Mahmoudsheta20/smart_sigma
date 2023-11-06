@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { listManage, listProjectCard } from "../utils/main";
 import { AiOutlineSearch } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
@@ -6,8 +6,46 @@ import { FaKey } from "react-icons/fa";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import InputForm from "../components/InputForm";
 import { LiaCalendarTimesSolid } from "react-icons/lia";
+import axios from "../axios";
+import { useStateContext } from "../context/CreateContext";
 const Home = () => {
   const [addProject, setaddProject] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [state, setstate] = useState([]);
+  const [showingStart, setShowingStart] = useState(0);
+  const [showingEnd, setShowingEnd] = useState(10);
+  const { token } = useStateContext();
+  useEffect(() => {
+    const getProject = async () => {
+      try {
+        const res = await axios.get("projects", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        setProjects(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProject();
+  }, []);
+  let maxLength = projects?.content?.length;
+
+  const HandleNext = () => {
+    if (showingEnd < maxLength) {
+      setShowingStart((e) => e + 10);
+      setShowingEnd((e) => e + 10);
+    }
+  };
+  const Handleprev = () => {
+    if (showingStart > 0) {
+      setShowingStart((e) => e - 10);
+      setShowingEnd((e) => e - 10);
+    }
+  };
+
   return (
     <>
       {addProject && (
@@ -18,9 +56,10 @@ const Home = () => {
       )}
 
       <div className="w-full relative">
-        <div className="py-10 flex  justify-between w-full gap-5">
-          {listProjectCard.map((project) => (
+        <div className="pb-5 pt-10 flex  justify-between w-full gap-5">
+          {listProjectCard.map((project, i) => (
             <ProjectCard
+              key={i}
               icon={project.icon}
               bgColor={project.bgColor}
               title_first={project.title_first}
@@ -32,14 +71,23 @@ const Home = () => {
           ))}
         </div>
         <SearchBar setaddProject={setaddProject} />
-        <div className="mt-6">
-          <h2 className="text-[20px] font-bold text-[#0D425B] mb-5">
+        <div className="mt-3">
+          <h2 className="text-[20px] font-bold text-[#0D425B] mb-3">
             Projects Info
           </h2>
-          <ProjectTable />
+          <ProjectTable
+            projects={projects}
+            showingStart={showingStart}
+            showingEnd={showingEnd}
+          />
         </div>
 
-        <Pagnation />
+        <Pagnation
+          HandleNext={HandleNext}
+          Handleprev={Handleprev}
+          showingStart={showingStart}
+          showingEnd={showingEnd}
+        />
       </div>
     </>
   );
@@ -240,288 +288,98 @@ const SearchBar = ({ setaddProject }) => {
   );
 };
 
-const ProjectTable = () => {
+const ProjectTable = ({ projects, showingEnd, showingStart }) => {
+  const [showingData, setShowingData] = useState([]);
+  const content = projects?.content?.slice(showingStart, showingEnd);
+
+  const HandleDate = (isoString) => {
+    const date = new Date(isoString);
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-based, so add 1
+    const year = date.getFullYear();
+
+    // Format the date as "DD/MM/YYYY"
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
   return (
     <div>
       <div className="bg-cyan-700 self-stretch flex flex-col mt-4 py-1.5 rounded-md max-md:max-w-full">
         <div className="items-start self-center flex w-full  px-5 max-w-[100%] justify-between gap-5 max-md:max-w-full max-md:flex-wrap max-md:justify-center">
-          <div className="flex items-center w-[70%] justify-between relative">
+          <div className="flex items-center w-[80%] justify-between relative">
             <div className="justify-center text-white text-lg font-medium leading-6 self-stretch">
               ID
             </div>
-            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[15%]">
+            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[10%]">
               Title
             </div>
-            <div className="justify-center text-white text-lg font-medium leading-6 absolute left-[31%]">
+            <div className="justify-center text-white text-lg font-medium leading-6 absolute left-[32%]">
               Description
             </div>
-            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[53%]">
+            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[58%]">
               Manager
             </div>
-            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[74%]">
+            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[75%]">
               Progress
             </div>
-            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[93%]">
+            <div className="justify-center text-white text-lg font-medium leading-6 self-stretch absolute left-[90%]">
               Deadline
             </div>
           </div>
         </div>
       </div>
 
-      <div className="items-start self-stretch flex flex-col mt-5 gap-6 max-md:max-w-full">
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
+      <div className="items-start self-stretch flex flex-col mt-3 gap-3 max-md:max-w-full">
+        {content?.length > 0 &&
+          content.map((data) => (
+            <div className="h-[50px] shadow-lg bg-white w-full rounded-lg flex items-center px-5 justify-between ">
+              <div className="w-[80%] flex items-center justify-between relative">
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
+                  {data.projectId}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[10%]">
+                  {data.title}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[32%]">
+                  {data.description}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[58%]">
+                  {data.managerName}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[75%]">
+                  {data.progress}%
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[90%]">
+                  {HandleDate(data.deadline)}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
+                  update
+                </button>
+                <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className="h-[50px] shadow-sm bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-          <div className="w-[70%] flex items-center justify-between relative">
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-              1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[15%]">
-              project 1
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[31%]">
-              Description
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[53%]">
-              Abdelrhman
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[74%]">
-              53%
-            </div>
-            <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[93%]">
-              10/10/2023
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg">
-              update
-            </button>
-            <button className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg">
-              Delete
-            </button>
-          </div>
-        </div>
+          ))}
       </div>
     </div>
   );
 };
 
-const Pagnation = () => {
+const Pagnation = ({ HandleNext, Handleprev, showingStart, showingEnd }) => {
   return (
     <div className="flex items-center justify-between absolute w-full bottom-[30px]">
       <div>
-        <p>showing 1 of 10 entries</p>
+        <p>{`showing ${showingStart + 1} of ${showingEnd} entries`}</p>
       </div>
       <div className="flex items-center gap-2">
-        <button className="w-[58px] h-[28px] border-2 border-[#0D425B] rounded-lg bg-white flex items-center justify-center">
+        <button
+          className="w-[58px] h-[28px] border-2 border-[#0D425B] rounded-lg bg-white flex items-center justify-center"
+          onClick={Handleprev}
+        >
           <svg
             width="9"
             height="14"
@@ -538,7 +396,10 @@ const Pagnation = () => {
             />
           </svg>
         </button>
-        <button className="w-[58px] h-[28px] border-2 border-[#0D425B] rounded-lg bg-[#0D425B] flex items-center justify-center">
+        <button
+          className="w-[58px] h-[28px] border-2 border-[#0D425B] rounded-lg bg-[#0D425B] flex items-center justify-center"
+          onClick={HandleNext}
+        >
           <svg
             width="8"
             height="14"

@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdEmail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import ResetPassword from "./ResetPassword";
 import { useStateContext } from "../context/CreateContext";
-import axios from "../axios";
-import { jwtDecode } from "jwt-decode";
-import Cookies from "universal-cookie";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [isReset, setIsReset] = useState(false);
   const { user, setToken } = useStateContext();
@@ -28,33 +26,27 @@ export default Login;
 const LoginForm = ({ setIsReset }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [valid, setvalid] = useState(true);
-  const { user, contextValue } = useStateContext();
-  const { setToken, token } = contextValue;
-  console.log(password);
-  console.log(contextValue);
-  const HandleLogin = async () => {
-    try {
-      const req = await axios.post("auth/login", {
-        email,
-        password,
-      });
-      console.log(req.data);
-      const { token } = req.data;
-      const decode = jwtDecode(token);
-      console.log("decode", decode);
-      setToken(token);
-    } catch (err) {
-      console.log(err);
-    }
-
-    // if (email && password) {
-    //   setvalid(true);
-    // } else {
-    //   setvalid(false);
-    // }
-  };
+  const { user, Login, valid, setvalid } = useStateContext();
+  const navigate = useNavigate();
+  const [remember, setRemember] = useState(false);
+  console.log(remember);
   console.log(valid);
+  const HandleLogin = async () => {
+    const req = await Login({ email, password }, remember);
+    if (req) {
+      navigate("/dashboard", { replace: true });
+    }
+  };
+
+  const HandleEmail = (e) => {
+    setEmail(e.target.value);
+    setvalid(true);
+  };
+  const HandlePassword = (e) => {
+    setPassword(e.target.value);
+    setvalid(true);
+  };
+
   return (
     <div className="flex flex-col gap-10 h-[750px] justify-center py-20 px-10 bg-white rounded-lg w-[50%] relative">
       <div className="text__absulte">
@@ -74,7 +66,7 @@ const LoginForm = ({ setIsReset }) => {
                 }`}
               />
             }
-            onChange={setEmail}
+            onChange={HandleEmail}
             value={email}
             type={"email"}
             valid={valid}
@@ -92,7 +84,7 @@ const LoginForm = ({ setIsReset }) => {
             lastIcon={
               <AiFillEyeInvisible className={`w-[27.05px] h-[21.96px]`} />
             }
-            onChange={setPassword}
+            onChange={HandlePassword}
             value={password}
             type={"password"}
             valid={valid}
@@ -102,7 +94,10 @@ const LoginForm = ({ setIsReset }) => {
 
           <div className="flex items-center justify-between">
             <label class="custom-checkbox flex items-center gap-3 text-[#2F2F2F]">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                onChange={(e) => setRemember(e.target.checked)}
+              />
               <span class="checkmark"></span>
               Remember me
             </label>
@@ -159,7 +154,7 @@ const Input = ({
         <input
           type={type}
           className="border-none outline-none bg-[#ECECEC] text-[#0D425B] font-bold placeholder:font-normal placeholder:text-sm placeholder:text-[#0d425bc7]"
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(e)}
           value={value}
           required
           placeholder={placeholder}
