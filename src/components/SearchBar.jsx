@@ -1,5 +1,5 @@
-import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+
 const SearchBar = ({ setaddProject }) => {
   return (
     <div className="flex items-center justify-between">
@@ -44,7 +44,10 @@ const SearchBar = ({ setaddProject }) => {
           <p className="text-[12px] ">Generate report</p>
         </div>
 
-        <div className="h-[29px] w-[144px] bg-[#136F9A] flex items-center rounded-md px-2 gap-5">
+        <div
+          className="h-[29px] w-[144px] bg-[#136F9A] flex items-center rounded-md px-2 gap-5 cursor-pointer"
+          onClick={() => setaddProject(true)}
+        >
           <svg
             width="15"
             height="15"

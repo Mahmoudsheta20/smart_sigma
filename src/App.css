@@ -164,13 +164,13 @@ tbody:before {
 
 .img__person {
   position: absolute;
-  top: 23%;
+  top: 26%;
   transform: translate(-50%, -50%);
   left: 50%;
 }
 .txt__person {
   position: absolute;
-  top: 60%;
+  top: 58%;
   width: 100%;
   transform: translate(-50%, -50%);
   left: 50%;
@@ -178,6 +178,28 @@ tbody:before {
 .button__person {
   position: absolute;
   top: 90%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.done {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 5;
+}
+
+.search__filter::-webkit-scrollbar {
+  display: none;
+}
+.search__filter {
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.img__absolute {
+  position: absolute;
+  top: -10%;
   transform: translate(-50%, -50%);
   left: 50%;
 }

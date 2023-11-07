@@ -32,27 +32,6 @@ const ResetPassword = ({ setIsReset }) => {
 
 export default ResetPassword;
 
-const Input = ({ icon, lastIcon, onChange, value, type, valid }) => {
-  return (
-    <div
-      className={`flex items-center border border-[#0D425B] h-[67px] ${
-        !valid && "border-red-500 "
-      } px-3 py-1 rounded-lg gap-4 bg-[#ECECEC]`}
-    >
-      {icon}
-      <input
-        type={type}
-        className="border-none outline-none bg-[#ECECEC] text-[#0D425B] font-bold placeholder:font-normal placeholder:text-sm placeholder:text-[#0d425bc7]"
-        onChange={(e) => onChange(e.target.value)}
-        value={value}
-        required
-      />
-      {lastIcon}
-      {!valid && <IconWrong />}
-    </div>
-  );
-};
-
 const Container = ({
   Header,
   Detials,

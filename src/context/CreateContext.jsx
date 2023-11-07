@@ -12,8 +12,8 @@ export const StoreContext = ({ children }) => {
   const [token, setToken_] = useState(
     cookis.get("token") || sessionStorage.getItem("token")
   );
-  const decode = jwtDecode(token);
-  const [user, setUser] = useState(decode.email);
+
+  const [user, setUser] = useState("");
   const [Remember, setRemember] = useState(false);
   const [state, setstate] = useState(true);
   const [valid, setvalid] = useState(true);
@@ -21,6 +21,12 @@ export const StoreContext = ({ children }) => {
   const setToken = (newToken) => {
     setToken_(newToken);
   };
+  useEffect(() => {
+    if (token) {
+      const decode = jwtDecode(token);
+      setUser(decode.email);
+    }
+  }, []);
   // useEffect(() => {
   //   if (token) {
   //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -52,6 +58,7 @@ export const StoreContext = ({ children }) => {
       const req = await axios.post("auth/login", user);
       console.log(req.data);
       const { token } = req.data;
+      const decode = jwtDecode(token);
       console.log("decode", decode);
       setToken(token);
       setvalid(true);
@@ -87,7 +94,6 @@ export const StoreContext = ({ children }) => {
         valid,
         setvalid,
         token,
-        decode,
       }}
     >
       {children}

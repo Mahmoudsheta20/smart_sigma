@@ -66,7 +66,7 @@ export const listManage = [
     bgColor: "bg-[#0D425B]",
     bgColorActive: "bg-[#1A83B5]",
     title: "Manage PMs",
-    to: "Manage PMs",
+    to: "ManagePMs",
   },
   {
     to: "ManageAdmins",
@@ -86,7 +86,7 @@ export const listManage = [
     ),
     bgColor: "bg-[#0D425B]",
     bgColorActive: "bg-[#1A83B5]",
-    title: "Manage Admins",
+    title: "ManageAdmins",
   },
   {
     to: "Manageprofile",
@@ -231,3 +231,15 @@ export const listProjectCard = [
     bgIcon: "bg-white",
   },
 ];
+
+export const HandleDate = (isoString) => {
+  const date = new Date(isoString);
+
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-based, so add 1
+  const year = date.getFullYear();
+
+  // Format the date as "DD/MM/YYYY"
+  const formattedDate = `${day}/${month}/${year}`;
+  return formattedDate;
+};
