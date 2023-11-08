@@ -10,7 +10,7 @@ const ProjectTable = ({
   token,
 }) => {
   const [showingData, setShowingData] = useState([]);
-  const content = projects?.content?.slice(showingStart, showingEnd);
+  const content = projects?.slice(showingStart, showingEnd);
 
   const HandleDelete = async (id) => {
     console.log(token);
@@ -25,7 +25,6 @@ const ProjectTable = ({
           },
         }
       );
-      console.log(res.data);
       setDeleteProject(true);
     } catch (err) {
       console.log(err);
@@ -61,51 +60,53 @@ const ProjectTable = ({
       <div className="items-start self-stretch flex flex-col mt-3 gap-3 max-md:max-w-full relative">
         {content?.length > 0 &&
           content.map((data) => (
-            <>
-              <div className="h-[50px] shadow-lg bg-white w-full rounded-lg flex items-center px-5 justify-between ">
-                <div className="w-[80%] flex items-center justify-between relative">
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
-                    {data.projectId}
-                  </div>
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[10%]">
-                    {data.title}
-                  </div>
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[32%]">
-                    {data.description}
-                  </div>
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[58%]">
-                    {data.managerName}
-                  </div>
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[75%]">
-                    {data.progress}%
-                  </div>
-                  <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[90%]">
-                    {HandleDate(data.deadline)}
-                  </div>
+            <div
+              className="h-[50px] shadow-lg bg-white w-full rounded-lg flex items-center px-5 justify-between"
+              key={data.projectId}
+            >
+              <div className="w-[80%] flex items-center justify-between relative">
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch">
+                  {data.projectId}
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg"
-                    onClick={() =>
-                      HandleUpdate(
-                        data.title,
-                        data.deadline,
-                        data.description,
-                        data.managerID
-                      )
-                    }
-                  >
-                    update
-                  </button>
-                  <button
-                    className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg"
-                    onClick={() => HandleDelete(data.projectId)}
-                  >
-                    Delete
-                  </button>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch absolute left-[10%]">
+                  {data.title}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[32%]">
+                  {data.description}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[58%]">
+                  {data.managerName}
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 absolute left-[75%]">
+                  {data.progress}%
+                </div>
+                <div className="justify-center text-cyan-900 text-lg font-medium leading-6 self-stretch whitespace-nowrap absolute left-[90%]">
+                  {HandleDate(data.deadline)}
                 </div>
               </div>
-            </>
+              <div className="flex items-center gap-2">
+                <button
+                  className="text-[14px] w-[58px] h-[36px] bg-[#136F9A] text-white rounded-lg"
+                  onClick={() =>
+                    HandleUpdate(
+                      data.projectId,
+                      data.title,
+                      data.deadline,
+                      data.description,
+                      data.managerID
+                    )
+                  }
+                >
+                  update
+                </button>
+                <button
+                  className="text-[14px] w-[58px] h-[36px] bg-[#FF6B6B] text-white rounded-lg"
+                  onClick={() => HandleDelete(data.projectId)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
       </div>
     </div>

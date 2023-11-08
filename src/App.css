@@ -107,12 +107,15 @@ input[type="checkbox"]:checked::before {
 }
 
 .overflow {
+}
+
+.overflow__upload {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #dcdcdc56;
+  background-color: #706c6cb2;
   left: 0;
-  z-index: 2;
+  z-index: 6;
 }
 .add__project {
   position: absolute;
@@ -121,6 +124,30 @@ input[type="checkbox"]:checked::before {
   left: 50%;
   z-index: 5;
 }
+
+.upload__photo {
+  position: absolute;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 7;
+}
+
+.upload__text {
+  position: absolute;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 7;
+}
+
+/* .upload__file {
+  position: absolute;
+  top: %;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 7;
+} */
 .project__card {
   position: absolute;
   width: 43.15px;
@@ -202,4 +229,22 @@ tbody:before {
   top: -10%;
   transform: translate(-50%, -50%);
   left: 50%;
+}
+
+#lable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #38aee6;
+  color: white;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 213px;
+  height: 51px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 600;
 }

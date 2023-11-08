@@ -10,6 +10,7 @@ import ManageEmployee from "./pages/ManageEmployee";
 import { StoreContext } from "./context/CreateContext";
 import ManagePm from "./pages/ManagePm";
 import ManageAdmins from "./pages/ManageAdmins";
+import ManageProfile from "./pages/ManageProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
+
     element: <Dashboard />,
     children: [
       {
@@ -43,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "ManageAdmins",
         element: <ManageAdmins />,
+      },
+      {
+        path: "Manageprofile",
+        element: <ManageProfile />,
       },
     ],
   },

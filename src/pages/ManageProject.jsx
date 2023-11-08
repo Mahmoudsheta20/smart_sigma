@@ -20,8 +20,12 @@ const Home = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [managerID, setManagerID] = useState("");
-
+  const [showSearch, setShowSearch] = useState(false);
+  const [done, setDone] = useState(false);
+  const [change, setChange] = useState(false);
+  const [projectId, setProjectId] = useState("");
   const { token } = useStateContext();
+  let maxLength;
   useEffect(() => {
     const getProject = async () => {
       try {
@@ -37,9 +41,8 @@ const Home = () => {
       }
     };
     getProject();
-  }, []);
-  let maxLength = projects?.content?.length;
-
+  }, [done, deleteProject, change]);
+  maxLength = projects?.length;
   const HandleNext = () => {
     if (showingEnd < maxLength) {
       setShowingStart((e) => e + 10);
@@ -53,20 +56,28 @@ const Home = () => {
     }
   };
 
-  const HandleUpdate = (title, deadline, description, id) => {
+  const HandleUpdate = (id, title, deadline, description, managerID) => {
+    setProjectId(id);
     setUpdateProject(true);
     setTitle(title);
     setDescription(description);
     setDeadline(deadline);
-    setManagerID(id);
+    setManagerID(managerID);
   };
 
   return (
     <>
       {addProject && (
         <>
-          <div className="overflow"></div>
-          <AddProject onChange={setaddProject} token={token} />
+          <div className="overflow" onClick={() => setShowSearch(false)}></div>
+          <AddProject
+            onChange={setaddProject}
+            token={token}
+            setShowSearch={setShowSearch}
+            showSearch={showSearch}
+            setDone={setDone}
+            done={done}
+          />
         </>
       )}
       {updateProject && (
@@ -78,14 +89,19 @@ const Home = () => {
             Title={title}
             Deadline={deadline}
             Description={description}
-            id={managerID}
+            managerId={managerID}
+            change={setChange}
+            projectId={projectId}
           />
         </>
       )}
       {deleteProject && (
         <>
           <div className="overflow"></div>
-          <Done />
+          <Done
+            setIsReset={setDeleteProject}
+            title={"Delete project has been saved successfully!"}
+          />
         </>
       )}
 
@@ -166,16 +182,23 @@ const ProjectCard = ({
   );
 };
 
-const AddProject = ({ onChange, token }) => {
+const AddProject = ({
+  onChange,
+  token,
+  showSearch,
+  setShowSearch,
+  done,
+  setDone,
+}) => {
   const [valid, setvalid] = useState(true);
   const [password, setPassword] = useState("");
-  const [done, setDone] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [managerID, setManagerID] = useState("");
   const [manager, setManager] = useState([]);
-  const [searchFilter, setSearchFilter] = useState(null);
+  const [searchFilter, setSearchFilter] = useState([]);
+
   const HandleAddProject = async () => {
     try {
       const res = await axios.post(
@@ -184,7 +207,7 @@ const AddProject = ({ onChange, token }) => {
           title,
           description,
           deadline,
-          managerID: 7,
+          managerID,
         },
         {
           headers: {
@@ -193,11 +216,9 @@ const AddProject = ({ onChange, token }) => {
           },
         }
       );
-      console.log(res.data);
+
       setDone(true);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -210,32 +231,38 @@ const AddProject = ({ onChange, token }) => {
           },
         });
         console.log(res.data);
-        setManager(res.data.content);
+        setManager(res.data);
       } catch (err) {
         console.log(err);
       }
     };
     getManager();
   }, []);
-  console.log(manager);
-  useEffect(() => {
-    let Filter = manager.filter((item) => {
+
+  const Search = (search) => {
+    setManagerID(search);
+    setShowSearch(true);
+    let filter = manager?.filter((item) => {
       if (
         `${item.firstName} ${item.lastName}`
           .toLowerCase()
-          .includes(managerID.toLowerCase()) ||
-        item.staffId == managerID
+          .includes(search.toLowerCase()) ||
+        item.staffId == search
       ) {
         return item;
       }
     });
+    setSearchFilter(filter);
+  };
 
-    setSearchFilter(Filter);
-  }, [managerID]);
+  if (!managerID) {
+    setShowSearch(false);
+  }
 
   const HandleSearch = (id) => {
     setManagerID(`${id}`);
-    setSearchFilter(null);
+    setShowSearch(false);
+    setSearchFilter([]);
   };
 
   return (
@@ -285,7 +312,7 @@ const AddProject = ({ onChange, token }) => {
                 />
                 <div className="relative">
                   <InputForm
-                    onChange={setManagerID}
+                    onChange={Search}
                     value={managerID}
                     type={"text"}
                     valid={valid}
@@ -314,24 +341,25 @@ const AddProject = ({ onChange, token }) => {
                     name={"Manager ID"}
                   />
 
-                  {searchFilter && (
+                  {showSearch && (
                     <div className="shadow-lg border-2 border-[#0D425B] absolute top-[120%] w-full h-[200px] rounded-lg px-4 py-2 bg-[#ECECEC]">
                       <div className="w-full  overflow-auto h-full search__filter ">
-                        {searchFilter.map((item) => (
-                          <div
-                            className="flex gap-5 py-1 cursor-pointer hover:bg-white px-1 rounded-lg"
-                            onClick={() => HandleSearch(item.staffId)}
-                          >
-                            <p className="text-[15px]">
-                              <span className="text-[17px]">ID: </span>
-                              {item.staffId}
-                            </p>
-                            <p className="text-[15px]">
-                              <span className="text-[17px]">name: </span>
-                              {item.firstName} {item.lastName}
-                            </p>
-                          </div>
-                        ))}
+                        {searchFilter.length > 0 &&
+                          searchFilter?.map((item) => (
+                            <div
+                              className="flex gap-5 py-1 cursor-pointer hover:bg-white px-1 rounded-lg"
+                              onClick={() => HandleSearch(item.staffId)}
+                            >
+                              <p className="text-[15px]">
+                                <span className="text-[17px]">ID: </span>
+                                {item.staffId}
+                              </p>
+                              <p className="text-[15px]">
+                                <span className="text-[17px]">name: </span>
+                                {item.firstName} {item.lastName}
+                              </p>
+                            </div>
+                          ))}
                       </div>
                     </div>
                   )}
@@ -355,7 +383,7 @@ const AddProject = ({ onChange, token }) => {
             </div>
           </div>
         </div>
-      )}{" "}
+      )}
     </>
   );
 };
@@ -368,23 +396,26 @@ const UpdateProject = ({
   Description,
   Deadline,
   projectId,
+  change,
+  managerId,
 }) => {
   const [valid, setvalid] = useState(true);
   const [done, setDone] = useState(false);
   const [title, setTitle] = useState(Title);
   const [description, setDescription] = useState(Description);
   const [deadline, setDeadline] = useState(Deadline);
-  const [managerID, setManagerID] = useState(id);
+  const [managerID, setManagerID] = useState(managerId);
 
   const HandleAddProject = async () => {
+    console.log(projectId);
     try {
       const res = await axios.put(
-        "projects/1",
+        `projects/${projectId}`,
         {
-          title: "Project 12",
-          description: "Description 12",
-          deadline: "2024-12-15T00:00:00",
-          managerID: 3,
+          title,
+          description,
+          deadline,
+          managerID,
         },
         {
           headers: {
@@ -393,8 +424,8 @@ const UpdateProject = ({
           },
         }
       );
-      console.log(res.data);
       setDone(true);
+      change((e) => !e);
     } catch (err) {
       console.log(err);
     }

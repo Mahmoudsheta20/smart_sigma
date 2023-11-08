@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { listManage } from "../utils/main";
 
-const NavBar = ({ user, LogOut }) => {
+const NavBar = ({ user, LogOut, img }) => {
   return (
     <div className="w-[20%] h-screen py-5 ">
       <div className="bg-white h-full rounded-lg px-4 flex flex-col justify-between py-10">
@@ -12,19 +12,12 @@ const NavBar = ({ user, LogOut }) => {
         </div>
 
         <div className="flex items-center flex-col mt-10 px-10">
-          <div className="bg-[#136F9A] w-[170px] h-[170px] rounded-full flex items-center justify-center">
-            <svg
-              className="w-[100px]"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
+          <div className="bg-[#136F9A] w-[170px] h-[170px] rounded-full flex items-center justify-center overflow-hidden">
+            <img
+              src={`https://task-manager-media.s3.amazonaws.com/images/${img}`}
+              alt={user}
+              className="w-[150px] h-[150px] rounded-full"
+            />
           </div>
           <div className="text-center">
             <p className="text-[20px] text-[#0D425B] font-semibold mt-5">

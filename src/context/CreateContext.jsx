@@ -17,6 +17,8 @@ export const StoreContext = ({ children }) => {
   const [Remember, setRemember] = useState(false);
   const [state, setstate] = useState(true);
   const [valid, setvalid] = useState(true);
+  const [img, setImg] = useState("");
+
   console.log(token);
   const setToken = (newToken) => {
     setToken_(newToken);
@@ -24,7 +26,8 @@ export const StoreContext = ({ children }) => {
   useEffect(() => {
     if (token) {
       const decode = jwtDecode(token);
-      setUser(decode.email);
+      setUser(decode.name);
+      setImg(decode.image);
     }
   }, []);
   // useEffect(() => {
@@ -67,7 +70,7 @@ export const StoreContext = ({ children }) => {
       } else {
         HandleSesstion(token);
       }
-      setUser(decode.email);
+      setUser(decode.name);
       return true;
     } catch (err) {
       setvalid(false);
@@ -94,6 +97,7 @@ export const StoreContext = ({ children }) => {
         valid,
         setvalid,
         token,
+        img,
       }}
     >
       {children}
